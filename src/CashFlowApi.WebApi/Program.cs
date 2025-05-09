@@ -4,6 +4,9 @@ using CashFlowApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Serilog;
+using Amazon.CloudWatchLogs;
+using Serilog.Sinks.AwsCloudWatch;
+using Serilog.Formatting.Compact;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment.EnvironmentName;
@@ -22,6 +25,23 @@ if (environment.Equals("LocalDevelopment"))
 }
 else
 {
+    var awsOptions = builder.Configuration.GetAWSOptions();
+    var cloudWatchLogsClient = awsOptions.CreateServiceClient<IAmazonCloudWatchLogs>();
+    var cloudWatchClient = new AmazonCloudWatchLogsClient();
+
+    logger.WriteTo.AmazonCloudWatch(
+        new CloudWatchSinkOptions
+        {
+            LogGroupName = Environment.GetEnvironmentVariable("CLOUD_WATCH__LOG_GROUP_NAME"),
+            CreateLogGroup = true,
+            LogStreamNameProvider = new CustomLogStreamNameProvider(),
+            BatchSizeLimit = 1000,
+            Period = TimeSpan.FromSeconds(10),
+            TextFormatter = new CompactJsonFormatter()
+        },
+        cloudWatchClient
+    );
+
     DbSecret dbSecret = await LoadDatabaseSecretAsync();
     var connectionString = $"Server={dbSecret.Host};Port={dbSecret.Port};Database={dbSecret.Database};User Id={dbSecret.Username};Password={dbSecret.Password};";
 
@@ -74,4 +94,15 @@ public class DbSecret
     public string Password { get; set; }
     
     public string Database { get; set; }
+}
+
+public class CustomLogStreamNameProvider : ILogStreamNameProvider
+{
+    public string GetLogStreamName()
+    {
+        return
+            $"{Environment.GetEnvironmentVariable("CLOUD_WATCH__LOG_STREAM_NAME")}-" +
+            $"{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT").ToLowerInvariant()}-" +
+            $"{DateTime.UtcNow:yyyyMMdd}";
+    }
 }
