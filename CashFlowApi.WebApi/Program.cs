@@ -1,15 +1,23 @@
-var builder = WebApplication.CreateBuilder(args);
+using CashFlowApi.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
-// Add services to the container.
+var builder = WebApplication.CreateBuilder(args);
+var environment = builder.Environment.EnvironmentName;
+
+if (environment.Equals("LocalDevelopment"))
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0, 31)))
+    );
+}
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
