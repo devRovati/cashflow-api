@@ -1,6 +1,8 @@
 using Amazon.SecretsManager.Model;
 using Amazon.SecretsManager;
+using CashFlowApi.Infrastructure;
 using CashFlowApi.Infrastructure.Persistence;
+using CashFlowApi.Application;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Serilog;
@@ -53,8 +55,10 @@ else
 Log.Logger = logger.CreateLogger();
 builder.Logging.AddSerilog();
 
-builder.Services.AddControllers();
+builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
 
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
