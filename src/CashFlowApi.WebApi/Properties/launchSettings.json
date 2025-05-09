@@ -9,16 +9,6 @@
     }
   },
   "profiles": {
-    "http": {
-      "commandName": "Project",
-      "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5028",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
@@ -26,7 +16,11 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7064;http://localhost:5028",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "LocalDevelopment",
+        "AWS_REGION": "us-east-1",
+        "CLOUD_WATCH__LOG_GROUP_NAME": "CacheFlowLogGroup",
+        "CLOUD_WATCH__LOG_STREAM_NAME": "cashflow",
+        "SECRET_NAME__DB_CREDENTIALS": "CacheFlowDbSecret"
       }
     },
     "IIS Express": {
