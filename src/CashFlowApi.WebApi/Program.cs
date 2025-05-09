@@ -3,9 +3,16 @@ using Amazon.SecretsManager;
 using CashFlowApi.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment.EnvironmentName;
+
+builder.Logging.ClearProviders();
+
+var logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console();
 
 if (environment.Equals("LocalDevelopment"))
 {
@@ -22,6 +29,9 @@ else
         options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 31)))
     );
 }
+
+Log.Logger = logger.CreateLogger();
+builder.Logging.AddSerilog();
 
 builder.Services.AddControllers();
 
