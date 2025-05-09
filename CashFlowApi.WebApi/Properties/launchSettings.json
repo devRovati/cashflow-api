@@ -26,7 +26,9 @@
       "launchUrl": "swagger",
       "applicationUrl": "https://localhost:7064;http://localhost:5028",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "LocalDevelopment"
+        "ASPNETCORE_ENVIRONMENT": "LocalDevelopment",
+        "AWS_REGION": "us-east-1",
+        "SECRET_NAME__DB_CREDENTIALS": "CacheFlowDbSecret"
       }
     },
     "IIS Express": {

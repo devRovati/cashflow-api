@@ -47,10 +47,7 @@ app.Run();
 async Task<DbSecret> LoadDatabaseSecretAsync()
 {
     using var client = new AmazonSecretsManagerClient();
-    var request = new GetSecretValueRequest
-    {
-        SecretId = "CacheFlowDbSecret" 
-    };
+    var request = new GetSecretValueRequest { SecretId = Environment.GetEnvironmentVariable("SECRET_NAME__DB_CREDENTIALS") };
 
     var response = await client.GetSecretValueAsync(request);
     return JsonConvert.DeserializeObject<DbSecret>(response.SecretString);
