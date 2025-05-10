@@ -9,6 +9,7 @@ using Serilog;
 using Amazon.CloudWatchLogs;
 using Serilog.Sinks.AwsCloudWatch;
 using Serilog.Formatting.Compact;
+using CashFlowApi.WebApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment.EnvironmentName;
@@ -63,6 +64,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName.Equals("LocalDevelopment"))
 {
