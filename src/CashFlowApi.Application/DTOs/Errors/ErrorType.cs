@@ -3,5 +3,6 @@ namespace CashFlowApi.Application.DTOs.Errors;
 
 public enum ErrorType
 {
-    Server = 1
+    BadRequest = 1,
+    Server = 2
 }
