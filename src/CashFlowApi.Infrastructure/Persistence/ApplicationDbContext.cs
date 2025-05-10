@@ -31,8 +31,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<CategoryEntity>(entity =>
         {
             entity.HasKey(e => e.CategoryId).HasName("pk_categories_category_id");
-            entity.HasOne<CategoryEntity>().WithMany().HasForeignKey(e => e.CreatedBy).HasConstraintName("fk_categories_users_created_by");
-            entity.HasOne<CategoryEntity>().WithMany().HasForeignKey(e => e.UpdatedBy).HasConstraintName("fk_categories_users_updated_by");
+            entity.HasOne<UserEntity>().WithMany().HasForeignKey(e => e.CreatedBy).HasConstraintName("fk_categories_users_created_by");
+            entity.HasOne<UserEntity>().WithMany().HasForeignKey(e => e.UpdatedBy).HasConstraintName("fk_categories_users_updated_by");
 
             entity.HasIndex(e => e.CreatedBy).HasDatabaseName("ix_categories_created_by");
             entity.HasIndex(e => e.UpdatedBy).HasDatabaseName("ix_categories_updated_by");
@@ -44,8 +44,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<TransactionEntity>(entity =>
         {
             entity.HasKey(e => e.TransactionId).HasName("pk_transactions_transaction_id");
-            entity.HasOne<TransactionEntity>().WithMany().HasForeignKey(e => e.CreatedBy).HasConstraintName("fk_transactions_users_created_by");
-            entity.HasOne<TransactionEntity>().WithMany().HasForeignKey(e => e.UpdatedBy).HasConstraintName("fk_transactions_users_updated_by");
+            entity.HasOne<UserEntity>().WithMany().HasForeignKey(e => e.CreatedBy).HasConstraintName("fk_transactions_users_created_by");
+            entity.HasOne<UserEntity>().WithMany().HasForeignKey(e => e.UpdatedBy).HasConstraintName("fk_transactions_users_updated_by");
 
             entity.HasIndex(e => e.CreatedBy).HasDatabaseName("ix_transactions_created_by");
             entity.HasIndex(e => e.UpdatedBy).HasDatabaseName("ix_transactions_updated_by");
