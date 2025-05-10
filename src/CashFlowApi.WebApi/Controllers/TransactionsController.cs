@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using FluentValidation;
 using FluentValidation.Results;
+using CashFlowApi.Application.Factories;
 
 namespace CashFlowApi.WebApi.Controllers;
 
@@ -27,17 +28,7 @@ public class TransactionsController : ControllerBase
         ValidationResult validationResult = await _validator.ValidateAsync(request);
 
         if (!validationResult.IsValid)
-        {
-            return BadRequest(new
-            {
-                errors = validationResult.Errors.Select(x => new
-                    {
-                        errorMessage = x.ErrorMessage,
-                        propertyName = x.PropertyName
-                    }
-                )
-            });
-        }
+            return ValidationResponseFactory.ToBadRequest(validationResult);
 
         TransactionResponse transactionResponse = await _transactionService.RegisterTransactionAsync(request);
         return Created("", transactionResponse);
