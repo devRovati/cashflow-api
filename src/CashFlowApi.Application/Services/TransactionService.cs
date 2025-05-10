@@ -49,7 +49,7 @@ public class TransactionService : ITransactionService
         {
             Amount = request.Amount,
             CategoryId = request.CategoryId,
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             CreatedBy = request.UserId,
             Description = request.Description,
             PaymentDate = request.PaymentDate,
