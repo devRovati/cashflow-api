@@ -21,8 +21,6 @@ public class TransactionService : ITransactionService
     {
         _logger.LogDebug("RegisterTransactionAsyncParams -> {@transactionRequest}", transactionRequest);
 
-        ValidateTransactionRequest(transactionRequest);
-
         TransactionEntity transaction = CreateTransactionEntity(transactionRequest);
 
         try
@@ -44,22 +42,6 @@ public class TransactionService : ITransactionService
     }
 
     #region private-methods
-
-    private void ValidateTransactionRequest(TransactionRequest request)
-    {
-        if (request == null)
-            throw new ArgumentException("Transaction request cannot be null.");
-
-        if (string.IsNullOrWhiteSpace(request.Description))
-            throw new ArgumentException("Description cannot be empty.");
-
-        if (request.Amount <= 0)
-            throw new ArgumentException("Amount must be greater than zero.");
-
-        if (request.PaymentDate == DateTime.MinValue)
-            throw new ArgumentException("Payment date is required.");
-    }
-
 
     private TransactionEntity CreateTransactionEntity(TransactionRequest request)
     {

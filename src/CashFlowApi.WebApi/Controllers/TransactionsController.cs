@@ -2,6 +2,8 @@
 using CashFlowApi.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace CashFlowApi.WebApi.Controllers;
 
@@ -9,10 +11,12 @@ namespace CashFlowApi.WebApi.Controllers;
 [ApiController]
 public class TransactionsController : ControllerBase
 {
+    private readonly IValidator<TransactionRequest> _validator;
     private readonly ITransactionService _transactionService;
 
-    public TransactionsController(ITransactionService transactionService)
+    public TransactionsController(IValidator<TransactionRequest> validator, ITransactionService transactionService)
     {
+        _validator = validator;
         _transactionService = transactionService;
     }
 
@@ -20,6 +24,21 @@ public class TransactionsController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> RegisterTransaction([FromBody] TransactionRequest request)
     {
+        ValidationResult validationResult = await _validator.ValidateAsync(request);
+
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(new
+            {
+                errors = validationResult.Errors.Select(x => new
+                    {
+                        errorMessage = x.ErrorMessage,
+                        propertyName = x.PropertyName
+                    }
+                )
+            });
+        }
+
         TransactionResponse transactionResponse = await _transactionService.RegisterTransactionAsync(request);
         return Created("", transactionResponse);
     }
