@@ -6,7 +6,7 @@ public class TransactionRequest
 {
     public DateTime PaymentDate { get; set; }
 
-    public TransactionType Type { get; set; }
+    public TransactionType TransactionType { get; set; }
 
     public string Description { get; set; }
 

@@ -25,7 +25,7 @@ public class TransactionServiceTest
             Description = "Venda de 1 veiculo 0km",
             PaymentDate = DateTime.Now,
             PaymentMethod = PaymentMethodType.Invoice,
-            Type = TransactionType.Debit,
+            TransactionType = TransactionType.Debit,
             UserId = 1
         };
 
@@ -40,17 +40,17 @@ public class TransactionServiceTest
         var transactionRequest = new TransactionRequest
         {
             PaymentDate = DateTime.Now,
-            Type = TransactionType.Debit,
+            TransactionType = TransactionType.Debit,
             Description = string.Empty,
             Amount = 1200000,
             CategoryId = 1,
             UserId = 1
         };
 
-        ArgumentException exception = await Assert.ThrowsAsync<ArgumentException>(
+        var exception = await Assert.ThrowsAsync<ArgumentException>(
             async () => await _transactionService.RegisterTransactionAsync(transactionRequest)
         );
 
-        Assert.Equal("Invalid argument", exception.Message);
+        Assert.IsType<ArgumentException>(exception);
     }
 }

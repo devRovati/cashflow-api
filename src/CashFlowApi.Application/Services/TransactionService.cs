@@ -19,26 +19,62 @@ public class TransactionService : ITransactionService
 
     public async Task<TransactionResponse> RegisterTransactionAsync(TransactionRequest transactionRequest)
     {
-        if (transactionRequest == null || string.IsNullOrEmpty(transactionRequest.Description))
+        _logger.LogDebug("RegisterTransactionAsyncParams -> {@transactionRequest}", transactionRequest);
+
+        ValidateTransactionRequest(transactionRequest);
+
+        TransactionEntity transaction = CreateTransactionEntity(transactionRequest);
+
+        try
         {
-            _logger.LogError("RegisterTransactionMessage -> Invalid arguments, transactionRequest: {@transactionRequest}", transactionRequest);
-            throw new ArgumentException("Invalid argument");
+            await _transactionRepository.CreateTransactionAsync(transaction);
+            _logger.LogInformation("RegisterTransactionAsyncMessage -> Transaction created successfully: {transactionId}", transaction.TransactionId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "RegisterTransactionAsyncErrorMessage -> Error creating transaction");
+            throw new InvalidOperationException("Failed to create transaction");
         }
 
-        TransactionEntity transaction = new()
+        return new TransactionResponse
         {
-            Amount = transactionRequest.Amount,
-            CategoryId = transactionRequest.CategoryId,
-            CreatedAt = DateTime.Now,
-            CreatedBy = transactionRequest.UserId,
-            Description = transactionRequest.Description,
-            PaymentDate = transactionRequest.PaymentDate,
-            PaymentMethod = transactionRequest.PaymentMethod.ToString(),
-            TransactionType = transactionRequest.Type.ToString()
+            CreatedAt = transaction.CreatedAt,
+            TransactionId = transaction.TransactionId
         };
-
-        await _transactionRepository.CreateTransactionAsync(transaction);
-
-        return new TransactionResponse();
     }
+
+    #region private-methods
+
+    private void ValidateTransactionRequest(TransactionRequest request)
+    {
+        if (request == null)
+            throw new ArgumentException("Transaction request cannot be null.");
+
+        if (string.IsNullOrWhiteSpace(request.Description))
+            throw new ArgumentException("Description cannot be empty.");
+
+        if (request.Amount <= 0)
+            throw new ArgumentException("Amount must be greater than zero.");
+
+        if (request.PaymentDate == DateTime.MinValue)
+            throw new ArgumentException("Payment date is required.");
+    }
+
+
+    private TransactionEntity CreateTransactionEntity(TransactionRequest request)
+    {
+        return new TransactionEntity
+        {
+            Amount = request.Amount,
+            CategoryId = request.CategoryId,
+            CreatedAt = DateTime.Now,
+            CreatedBy = request.UserId,
+            Description = request.Description,
+            PaymentDate = request.PaymentDate,
+            PaymentMethod = request.PaymentMethod.ToString(),
+            TransactionType = request.TransactionType.ToString()
+        };
+    }
+
+    #endregion
 }
