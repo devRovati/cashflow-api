@@ -13,7 +13,7 @@ public class TransactionRepository : ITransactionRepository
         _context = context;
     }
 
-    public async Task<TransactionEntity> CreateTransactionAsync (TransactionEntity transaction)
+    public async Task<TransactionEntity> CreateTransactionAsync(TransactionEntity transaction)
     {
         await _context.AddAsync<TransactionEntity>(transaction);
         await _context.SaveChangesAsync();

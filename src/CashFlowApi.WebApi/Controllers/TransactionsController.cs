@@ -18,9 +18,9 @@ public class TransactionsController : ControllerBase
 
     [HttpPost]
     [AllowAnonymous]
-    public ActionResult RegisterTransaction([FromBody] TransactionRequest request)
+    public async Task<IActionResult> RegisterTransaction([FromBody] TransactionRequest request)
     {
-        _transactionService.RegisterTransaction(request);
-        return Created();
+        TransactionResponse transactionResponse = await _transactionService.RegisterTransactionAsync(request);
+        return Created("", transactionResponse);
     }
 }

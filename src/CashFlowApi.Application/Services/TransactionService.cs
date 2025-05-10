@@ -17,8 +17,7 @@ public class TransactionService : ITransactionService
         _transactionRepository = transactionRepository;
     }
 
-
-    public TransactionResponse RegisterTransaction(TransactionRequest transactionRequest)
+    public async Task<TransactionResponse> RegisterTransactionAsync(TransactionRequest transactionRequest)
     {
         if (transactionRequest == null || string.IsNullOrEmpty(transactionRequest.Description))
         {
@@ -26,8 +25,19 @@ public class TransactionService : ITransactionService
             throw new ArgumentException("Invalid argument");
         }
 
-        var transaction = new TransactionEntity();
-        _transactionRepository.CreateTransactionAsync(transaction);
+        TransactionEntity transaction = new()
+        {
+            Amount = transactionRequest.Amount,
+            CategoryId = transactionRequest.CategoryId,
+            CreatedAt = DateTime.Now,
+            CreatedBy = transactionRequest.UserId,
+            Description = transactionRequest.Description,
+            PaymentDate = transactionRequest.PaymentDate,
+            PaymentMethod = transactionRequest.PaymentMethod.ToString(),
+            TransactionType = transactionRequest.Type.ToString()
+        };
+
+        await _transactionRepository.CreateTransactionAsync(transaction);
 
         return new TransactionResponse();
     }

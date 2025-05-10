@@ -4,5 +4,5 @@ namespace CashFlowApi.Application.Interfaces;
 
 public interface ITransactionService
 {
-    public TransactionResponse RegisterTransaction(TransactionRequest transactionRequest);
+    public Task<TransactionResponse> RegisterTransactionAsync(TransactionRequest transactionRequest);
 }
