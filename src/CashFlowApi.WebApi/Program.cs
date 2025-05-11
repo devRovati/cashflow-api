@@ -12,6 +12,7 @@ using Serilog.Formatting.Compact;
 using CashFlowApi.WebApi.Middlewares;
 using System.Text.Json.Serialization;
 using Swashbuckle.AspNetCore.Filters;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment.EnvironmentName;
@@ -74,6 +75,8 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.EnableAnnotations();
     options.ExampleFilters();
+    options.AddServer(new OpenApiServer { Url = Environment.GetEnvironmentVariable("SWAGGER__CONTEXT_PATH") });
+
 });
 
 var app = builder.Build();
