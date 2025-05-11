@@ -1,4 +1,6 @@
-﻿using CashFlowApi.Application.DTOs.Transactions;
+﻿using CashFlowApi.Application.DTOs.Errors;
+using CashFlowApi.Application.DTOs.Transactions;
+using CashFlowApi.Application.Exceptions;
 using CashFlowApi.Application.Interfaces;
 using CashFlowApi.Domain.Entities;
 using CashFlowApi.Domain.Interfaces;
@@ -21,7 +23,7 @@ public class TransactionService : ITransactionService
     {
         _logger.LogDebug("RegisterTransactionAsyncParams -> {@transactionRequest}", transactionRequest);
 
-        TransactionEntity transaction = CreateTransactionEntity(transactionRequest);
+        TransactionEntity transaction = MapToTransactionEntity(transactionRequest);
 
         try
         {
@@ -30,8 +32,14 @@ public class TransactionService : ITransactionService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "RegisterTransactionAsyncErrorMessage -> Error creating transaction");
-            throw new InvalidOperationException("Failed to create transaction");
+            _logger.LogCritical("RegisterTransactionAsyncErrorMessage -> Error creating transaction. ErrorMessage: {errorMessage}", ex.Message);
+
+            throw new InternalServerException(new()
+            {
+                Message = "Unexpected internal error",
+                ErrorType = ErrorType.Server,
+                Errors = [ new() { Message = "An error occurred while trying to save the transaction" } ]
+            });
         }
 
         return new TransactionResponse
@@ -43,7 +51,7 @@ public class TransactionService : ITransactionService
 
     #region private-methods
 
-    private TransactionEntity CreateTransactionEntity(TransactionRequest request)
+    private TransactionEntity MapToTransactionEntity(TransactionRequest request)
     {
         return new TransactionEntity
         {
