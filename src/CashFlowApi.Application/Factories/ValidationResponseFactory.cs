@@ -19,7 +19,6 @@ public static class ValidationResponseFactory
             Message = "One or more errors occurred while validating the request"
         };
 
-
         return new BadRequestObjectResult(errorResponse);
     }
 }

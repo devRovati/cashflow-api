@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.AutoMock;
 
-namespace Application.Tests;
+namespace CashFlow.Application.Tests;
 
 public class TransactionServiceTest
 {
