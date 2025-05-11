@@ -1,4 +1,5 @@
-﻿using CashFlowApi.Application.DTOs.Errors;
+﻿using Application.Tests.Extensions;
+using CashFlowApi.Application.DTOs.Errors;
 using CashFlowApi.Application.DTOs.Transactions;
 using CashFlowApi.Application.Exceptions;
 using CashFlowApi.Application.Interfaces;
@@ -15,7 +16,7 @@ namespace Application.Tests;
 public class TransactionServiceTest
 {
     private readonly AutoMocker _mocker;
-    private readonly TransactionService _transactionService;
+    private readonly ITransactionService _transactionService;
 
     public TransactionServiceTest()
     {
@@ -101,15 +102,14 @@ public class TransactionServiceTest
 
         // Assert
         // Validate if the success message was logged once
+        var times = Times.Once;
+
         _mocker.GetMock<ILogger<TransactionService>>()
-            .Verify(logger =>
-                logger.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("RegisterTransactionAsyncMessage")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
+            .VerifyLoggedMessage(
+                LogLevel.Information,
+                "RegisterTransactionAsyncMessage",
+                times
+            );
     }
 
     [Fact]
@@ -135,14 +135,13 @@ public class TransactionServiceTest
 
         // Assert
         // Verify that the critcal log was written
+        var times = Times.Once;
+
         _mocker.GetMock<ILogger<TransactionService>>()
-            .Verify(logger =>
-                logger.Log(
-                    LogLevel.Critical,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("RegisterTransactionAsyncErrorMessage")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
+            .VerifyLoggedMessage(
+                LogLevel.Critical,
+                "RegisterTransactionAsyncErrorMessage",
+                times
+            );
     }
 }
