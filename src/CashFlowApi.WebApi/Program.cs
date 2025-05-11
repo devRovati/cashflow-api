@@ -11,6 +11,7 @@ using Serilog.Sinks.AwsCloudWatch;
 using Serilog.Formatting.Compact;
 using CashFlowApi.WebApi.Middlewares;
 using System.Text.Json.Serialization;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment.EnvironmentName;
@@ -66,8 +67,14 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
+builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.EnableAnnotations();
+    options.ExampleFilters();
+});
 
 var app = builder.Build();
 
