@@ -10,6 +10,7 @@ using Amazon.CloudWatchLogs;
 using Serilog.Sinks.AwsCloudWatch;
 using Serilog.Formatting.Compact;
 using CashFlowApi.WebApi.Middlewares;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment.EnvironmentName;
@@ -59,7 +60,12 @@ builder.Logging.AddSerilog();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

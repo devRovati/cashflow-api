@@ -5,6 +5,10 @@ namespace CashFlowApi.Application.DTOs.Errors;
 
 public class ErrorResponse
 {
+    [SwaggerSchema("Error type")]
+    [JsonProperty("errorType")]
+    public ErrorType ErrorType { get; set; }
+
     [SwaggerSchema("Error message")]
     [JsonProperty("message")]
     public string Message { get; set; }
@@ -12,10 +16,6 @@ public class ErrorResponse
     [SwaggerSchema("A list of errors")]
     [JsonProperty("errors")]
     public List<Error> Errors { get; set; }
-
-    [SwaggerSchema("Error type")]
-    [JsonProperty("errorType")]
-    public ErrorType ErrorType { get; set; }
 
     public ErrorResponse()
     {
