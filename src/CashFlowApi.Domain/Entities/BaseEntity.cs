@@ -1,15 +1,21 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace CashFlowApi.Domain.Entities;
 
 public class BaseEntity
 {
-    public int Id { get; set; }
+    [Required]
+    [Column("created_at")]
+    public DateTime CreatedAt { get; set; }
 
-    public DateTime CreatedOn { get; set; }
-
-    public DateTime UpdatedOn { get; set; }
-
+    [Required]
+    [Column("created_by")]
     public int CreatedBy { get; set; }
 
-    public int UpdatedBy { get; set; }
+    [Column("updated_at")]
+    public DateTime? UpdatedAt { get; set; }
+
+    [Column("updated_by")]
+    public int? UpdatedBy { get; set; }
 }

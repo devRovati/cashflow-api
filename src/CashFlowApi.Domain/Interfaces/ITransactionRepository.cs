@@ -1,7 +1,8 @@
-﻿
+﻿using CashFlowApi.Domain.Entities;
+
 namespace CashFlowApi.Domain.Interfaces;
 
 public interface ITransactionRepository
 {
-    public void CreateTransaction();
+    public Task<TransactionEntity> CreateTransactionAsync(TransactionEntity transaction);
 }

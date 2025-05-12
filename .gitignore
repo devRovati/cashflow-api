@@ -4,3 +4,7 @@ obj/
 bin/
 /.vs
 appsettings.*
+env_local
+
+TestResults/
+CoverageReport/

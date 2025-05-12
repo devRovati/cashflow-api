@@ -1,12 +1,18 @@
 using Amazon.SecretsManager.Model;
 using Amazon.SecretsManager;
+using CashFlowApi.Infrastructure;
 using CashFlowApi.Infrastructure.Persistence;
+using CashFlowApi.Application;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Serilog;
 using Amazon.CloudWatchLogs;
 using Serilog.Sinks.AwsCloudWatch;
 using Serilog.Formatting.Compact;
+using CashFlowApi.WebApi.Middlewares;
+using System.Text.Json.Serialization;
+using Swashbuckle.AspNetCore.Filters;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment.EnvironmentName;
@@ -53,14 +59,31 @@ else
 Log.Logger = logger.CreateLogger();
 builder.Logging.AddSerilog();
 
-builder.Services.AddControllers();
+builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.EnableAnnotations();
+    options.ExampleFilters();
+    options.AddServer(new OpenApiServer { Url = Environment.GetEnvironmentVariable("SWAGGER__CONTEXT_PATH") });
+
+});
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseMiddleware<ExceptionMiddleware>();
+
+if (app.Environment.IsDevelopment() || app.Environment.EnvironmentName.Equals("LocalDevelopment"))
 {
     app.UseSwagger();
     app.UseSwaggerUI();

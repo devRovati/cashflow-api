@@ -20,7 +20,8 @@
         "AWS_REGION": "us-east-1",
         "CLOUD_WATCH__LOG_GROUP_NAME": "CacheFlowLogGroup",
         "CLOUD_WATCH__LOG_STREAM_NAME": "cashflow",
-        "SECRET_NAME__DB_CREDENTIALS": "CacheFlowDbSecret"
+        "SECRET_NAME__DB_CREDENTIALS": "CacheFlowDbSecret",
+        "SWAGGER__CONTEXT_PATH": "/"
       }
     },
     "IIS Express": {
