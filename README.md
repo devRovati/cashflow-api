@@ -4,8 +4,7 @@
 
 ### 1.1 Database (MySQL via Docker)
 
-Run the following command to start a MySQL container locally.  
-> Make sure to replace credentials with your own.
+Run the following command to start a MySQL container locally. Make sure to replace credentials with your own.
 
 ```bash
 docker run --name mysql-local \
